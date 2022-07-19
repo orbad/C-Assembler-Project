@@ -21,6 +21,10 @@ typedef struct system_reserved_words {
     char* words;
 } sysReserved;
 
+typedef struct language_reserved{
+    char* letters;
+} langReserved;
+
 /*will hold the actions names and opcodes*/
 typedef struct action_table {
     char* name;
@@ -74,7 +78,10 @@ void second_pass (char *fileName, symbol * symTable,object *objects);
 void removeTails(char * line);
 
 /*action table functions */
-void tableBuild();
+void tableBuild(action *opcode);
+
+/*Project's 32-base language*/
+void langBuild(langReserved *base);
 
 void memoryBuild(sysReserved *memory);
 
@@ -92,5 +99,3 @@ int memCheck(char* token, sysReserved *memory );
 int extractNumber (char * word);
 
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter);
-
-
