@@ -1,5 +1,4 @@
-// #include "header.h"
-#include <stdio.h> /* DELETE !!!!!*/
+#include "header.h"
 
 /* Struct decleration */
 typedef struct node{
