@@ -1,21 +1,21 @@
 #include "header.h"
 
 /* Struct decleration */
-typedef struct node{
-    string line;
-    struct node * next;
-}node;
+typedef struct Node{
+    String line;
+    struct Node * next;
+}Node;
 
 typedef struct LinkedList{
+    String macroName;
     struct Node * head;
     struct Node * tail;
 }LinkedList;
 
-typedef struct table {
-    string name;
-    node data;
-} table;
+typedef struct Table {
+    LinkedList macros;
+} Table;
 
-void FreeList(LinkedList *list);
-
-
+void free_list(LinkedList *list);
+int search_list(LinkedList *list, String str);
+void print_macro(LinkedList *list, String str);

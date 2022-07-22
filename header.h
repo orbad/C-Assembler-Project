@@ -13,7 +13,7 @@
 #define OPS_FIRST_VALUE 100
 
 
-typedef char string[LINE_LENGTH];
+typedef char String[LINE_LENGTH];
 
 
 /*will hold the system reserved words to be checked all over the program*/
@@ -38,7 +38,7 @@ typedef struct dynamic_values_and_error_flags {
 
 /*a symbol table */
 typedef struct Symbol {
-    string name;
+    String name;
     int address;
     int base;
     int offset;
@@ -89,7 +89,7 @@ int findAction(char* token, action table[] );
 
 /*symbol table functions */
 
-int isSymbol(string token, symbol * symTable, int tableSize);
+int isSymbol(String token, symbol * symTable, int tableSize);
 
 /*memory holder functions */
 
