@@ -9,14 +9,22 @@ void pre_proccesor(FILE *file, char fileName[])
 {
     int macroFlag = FALSE;
     FILE *sourceFile;
-    char ch;
     char *token;
-    String line;
     char isMacro[LINE_LENGTH];
 
+    String macroStr = "macro ";
+    String endmStr = "endmacro";
+    String line;
 
-    LinkedList *macroTable;
+    Table *macroTable;
     char delemiters[] = " \n\t\r";
+
+    sourceFile = fopen(file, "r");
+    if (sourceFile == NULL)
+    {
+        printf("Source File openning failed");
+        return;
+    }
 
     FILE *newFile = fopen(fileName, "w");
     if (newFile == NULL)
@@ -25,77 +33,92 @@ void pre_proccesor(FILE *file, char fileName[])
         return;
     }
 
-    sourceFile = fopen(file, "r");
-    if (sourceFile == NULL)
+    /* If the source file hasn't opened or is empty, we don't initialze the Macro Table */
+    if ((fgets(line, LINE_LENGTH, sourceFile) != EOF))
     {
-        printf("Source File openning failed");
+        printf("Empty source file");
         return;
     }
-    else
-    { /* If the source file hasn't opened or is empty, we don't initialze the Macro Table */
-        if ((ch = fgetc(sourceFile)) == EOF)
-        {
-            printf("Empty source file");
-            return;
-        }
 
-        macroTable = (LinkedList *)malloc(sizeof(LinkedList));
-        if (macroTable == NULL)
-        {
-            printf("Memory allocation for Macro Table failed");
-            return;
-        }
+    macroTable = (Table *)malloc(sizeof(Table));
+    if (macroTable == NULL)
+    {
+        printf("Memory allocation for Macro Table failed");
+        return;
     }
 
-    while (fgets(line, LINE_LENGTH, sourceFile) != EOF){ /* First loop- reading from the file to initialize Macro Table*/
+    while (fgets(line, LINE_LENGTH, sourceFile) != EOF)
+    {
         if (macroFlag == FALSE)
         {
             strncpy(isMacro, line, 6);
-            if ((strcmp(isMacro, "macro ")) == 0)   /* Checks if the first word is "macro " */
-            { 
-                if (search_list != 0){
+            if ((strcmp(isMacro, "macro ")) == 0) /* Checks if the first word is "macro " */
+            {
+                macroFlag = TRUE;
+                LinkedList *curr;
+                curr = (LinkedList *)malloc(sizeof(LinkedList));
+                if (curr == NULL)
+                {
+                    printf("Memory allocation failed");
                     return;
                 }
-                macroFlag = TRUE;
-                macroTable->macroName = strchr(line, delemiters);  /* Names the macro */
+
+                memcpy(curr->macroName, token, LINE_LENGTH); /* Names the macro */
+
+                if (macroTable->head == NULL)
+                { /* If this is the first line */
+                    macroTable->head = curr;
+                    macroTable->tail = curr;
+                }
+                else
+                { /* Manuelly insert each line at the end of the LinkedList*/
+                    macroTable->tail->next = curr;
+                    macroTable->tail = curr;
+                }
+                token = strchr(line, delemiters);
             }
         }
-        else{ /* Filling the lines of the macro, each line is a node */
-            if (strcmp(isMacro, "endmacro") == 0){ /* End of macro*/
+        else
+        { /* Filling the lines of the macro, each line is a node */
+            if (strcmp(isMacro, "endmacro") == 0)
+            { /* End of macro*/
                 macroFlag = FALSE;
                 continue;
             }
+            fputs(line, newFile); /* Prints the line into the new file */
+
             Node *curr;
+            if (curr == NULL)
+            {
+                printf("Memory allocation failed");
+                return;
+            }
+
             LinkedList *list;
+            if (list == NULL)
+            {
+                printf("Memory allocation failed");
+                return;
+            }
 
             curr = (Node *)malloc(sizeof(Node));
             list = (LinkedList *)malloc(sizeof(LinkedList));
 
             strcpy(line, curr->line);
 
-            if (list->head == NULL){ /* If this is the first line */
+            if (list->head == NULL)
+            { /* If this is the first line */
                 list->head = curr;
                 list->tail = curr;
             }
-            else{ 
+            else
+            { /* Manuelly insert each line at the end of the LinkedList*/
                 list->tail->next = curr;
                 list->tail = curr;
             }
         }
+        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the array for the next itiration */
     }
 
-    memset(isMacro,'\0',sizeof(char)*LINE_LENGTH);
-    rewind(sourceFile); /* Resetting the pointer of the file */
-
-    while (fgets(line, LINE_LENGTH, sourceFile) != EOF){
-        strncpy(isMacro, line, 6);
-        char *ptr = NULL;
-        if ((strcmp(isMacro, "macro ")) == 0){
-            memset(isMacro,'\0',sizeof(char)*LINE_LENGTH);
-            ptr = strchr(line, delemiters);
-            print_macro(macroTable, ptr);
-
-        }
-            fputs(line,newFile);
-    }
+    free_list_of_lists(macroTable);
 }

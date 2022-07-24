@@ -14,6 +14,18 @@ void free_list(LinkedList *list)
     }
 }
 
+void free_list_of_lists(Table *table){
+    LinkedList *curr = table->head;
+    LinkedList *tmp;
+
+    while (curr != NULL)
+    {
+        tmp = curr;
+        curr = curr->next;
+        free_list(tmp);
+    }
+}
+
 /* Checks if the macro is already registered in the Macro Table.
    returns 0 if the macro is a new one
    returns -1 if the macro is already registered */
@@ -53,14 +65,4 @@ LinkedList* find_macro(LinkedList *list, String str)
             return curr;
         }
     }
-}
-void print_macro(LinkedList *list, String str)
-{
-    Node *curr;
-    curr = list->head;
-    do
-    {
-        puts(curr->line);
-        curr = curr->next;
-    } while (curr != NULL);
 }
