@@ -52,7 +52,6 @@ LinkedList* find_macro(LinkedList *list, String str)
         {
             return curr;
         }
-
     }
 }
 void print_macro(LinkedList *list, String str)
