@@ -29,17 +29,17 @@ void free_list_of_lists(Table *table){
 /* Checks if the macro is already registered in the Macro Table.
    returns 0 if the macro is a new one
    returns -1 if the macro is already registered */
-int search_list(LinkedList *list, String str)
+int search_list(Table *table, String str)
 {
-    Node *curr;
+    LinkedList *curr;
     int res = 0;
-    if (list != NULL)
+    if (table != NULL)
     {
-        curr = list->head;
+        curr = table->head;
         while (curr != NULL)
         {
             res = strcmp((curr), str);
-            curr = list->head->next;
+            curr = table->head->next;
         }
     }
     if (res == 0)
@@ -64,5 +64,15 @@ LinkedList* find_macro(LinkedList *list, String str)
         {
             return curr;
         }
+    }
+    return;
+}
+
+void print_macro(LinkedList *list, FILE *file){
+    Node *curr = list->head;
+
+    while (curr != NULL)
+    {
+        fputs(curr->line,file);
     }
 }

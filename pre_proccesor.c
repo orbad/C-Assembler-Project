@@ -12,8 +12,6 @@ void pre_proccesor(FILE *file, char fileName[])
     char *token;
     char isMacro[LINE_LENGTH];
 
-    String macroStr = "macro ";
-    String endmStr = "endmacro";
     String line;
 
     Table *macroTable;
@@ -54,6 +52,8 @@ void pre_proccesor(FILE *file, char fileName[])
             strncpy(isMacro, line, 6);
             if ((strcmp(isMacro, "macro ")) == 0) /* Checks if the first word is "macro " */
             {
+                token = strchr(line, delemiters);
+                if (search_list(macroTable,token) == 0){
                 macroFlag = TRUE;
                 LinkedList *curr;
                 curr = (LinkedList *)malloc(sizeof(LinkedList));
@@ -75,7 +75,7 @@ void pre_proccesor(FILE *file, char fileName[])
                     macroTable->tail->next = curr;
                     macroTable->tail = curr;
                 }
-                token = strchr(line, delemiters);
+                }
             }
         }
         else
@@ -84,6 +84,9 @@ void pre_proccesor(FILE *file, char fileName[])
             { /* End of macro*/
                 macroFlag = FALSE;
                 continue;
+            }
+            if (find_macro(macroTable, line) != NULL){
+                print_macro(find_macro(macroTable, line), newFile);
             }
             fputs(line, newFile); /* Prints the line into the new file */
 
@@ -115,10 +118,12 @@ void pre_proccesor(FILE *file, char fileName[])
             { /* Manuelly insert each line at the end of the LinkedList*/
                 list->tail->next = curr;
                 list->tail = curr;
-            }
+            }    
         }
-        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the array for the next itiration */
+        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
     }
 
     free_list_of_lists(macroTable);
+    fclose(sourceFile);
+    fclose(newFile);
 }
