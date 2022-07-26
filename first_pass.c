@@ -22,20 +22,18 @@ ymbol* first_pass(char *fileName,object* objects) {
     symbol *symTable = (symbol *) malloc(sizeof(symbol));
 
 
-    FILE *sFile = fopen(strcat(fileName, ".am"), "r");
-    fileName[strlen(fileName)-3]='\0'; /*removing the .am */
+    FILE *sFile = fopen(fileName, "r");
+    fileName[strlen(fileName)-3]='\0'; /*removing the .am extension */
 
     if (!symTable) {
-        printf("memory allocation for symbol table failed\n");
+        printf("Memory allocation for symbol table failed\n");
         exit(0);
     } else {
-
         while (fgets(line, LINE_LENGTH, sFile) != NULL) {
             lineCounter++;
-
-            /*checking the line length*/
+            /* Checking the line length */
             if (line[strlen(line) - 1] != '\n') {
-                printf("error in line %d: line is longer than valid line length\n",lineCounter);
+                printf("Error in line %d: line is longer than valid line length\n",lineCounter);
                 errorFlag = TRUE;
             }
 
@@ -44,20 +42,19 @@ ymbol* first_pass(char *fileName,object* objects) {
                 tableSize++;
                 q = (symbol *) realloc(symTable, sizeof(symbol) * (tableSize + 1));
                 if (!q) {
-                    printf("memory allocation for symbol table failed\n");
+                    printf("Memory allocation for symbol table failed\n");
                     exit(0);
                 }
                 symTable = q;
             }
             newSymbol = FALSE;
 
-
             /*skipping comments*/
 
             strcpy(copyLine, line);
-            token = strtok(copyLine, "\n"); /*in the beginning token gets the full line, and checks if it is empty*/
+            token = strtok(copyLine, "\n"); /* In the beginning token gets the full line, and checks if it is empty */
 
-            /*counting and then skipping empty\whitespaces\comment lines*/
+            /* Counting and then skipping empty\whitespaces\comment lines */
             if (!token)
                 continue;
 
@@ -69,21 +66,20 @@ ymbol* first_pass(char *fileName,object* objects) {
 
 
 
-            /*if found : in the line, there is a label*/
+            /* If found : in the line, there is a label*/
             if (strchr(line, ':')) {  /*Label check:*/
                 if (!strchr(token, ':')){
-                    printf("error in line %d:there is a space before the end of label declaration.\n", lineCounter);
+                    printf("Error in line %d:there is a space before the end of label declaration.\n", lineCounter);
                     errorFlag = TRUE;
                     token = strtok(NULL, delimit);
                 }
-                strcpy(validLabel, token); /*in order to manipulate the ":" */
-                validLabel[strlen(validLabel) - 1] = '\0';
+                strcpy(validLabel, token);
+                validLabel[strlen(validLabel) - 1] = '\0'; /* In order to manipulate the ":" */
 
-                /*error flag will be different than 0 if either there was a flag before or isn't a valid symbol*/
+                /* Error flag will be different from 0 if there was a flag beforehand or the given symbol isn't a valid symbol */
                 errorFlag = errorFlag + isValidSymbol(validLabel, symTable, tableSize, objects->memory, lineCounter);
-                /*for now entering only the address and name*/
+                /* As for now we'll enter the address and name to the symbol table */
                 addSymbol(validLabel, IC + DC, NEUTRAL, tableSize, symTable);
-
                 token = strtok(NULL, delimit); /*getting the word after the label*/
                 newSymbol = TRUE;
             }
@@ -93,10 +89,9 @@ ymbol* first_pass(char *fileName,object* objects) {
 
             /*dealing with data*/
             if (token[0] == '.') {
-
                 if (!strcmp(token, ".data")) {
-                    token = strtok(NULL, " ,\n");/*operand*/
-                    while (token) { /*DC counts all the lines will be needed for the data*/
+                    token = strtok(NULL, " ,\n"); /* Operand */
+                    while (token) { /* DC counts all the lines will be needed for the data */
                         token = strtok(NULL, delimit);
                         DC++;
                     }
@@ -105,7 +100,7 @@ ymbol* first_pass(char *fileName,object* objects) {
 
                     token = strtok(NULL, delimit);
 
-                    if (token[0] == '\"' && token[strlen(token) - 1] == '\"') /*counting the string length*/
+                    if (token[0] == '\"' && token[strlen(token) - 1] == '\"') /* Counting the string's length */
                         DC = DC + (int) strlen(token) - 1;
 
                     else {
@@ -119,7 +114,30 @@ ymbol* first_pass(char *fileName,object* objects) {
                     }
                 }
 
-                    /* entry or extern */
+                /* If .struct is presented */
+                else if (!strcmp(token, ".struct")) {
+                    token = strtok(NULL, delimit);
+                    if (token[0] == '\"'){
+                        printf("error in line %d: a struct cannot start with a string\n",lineCounter);
+                        errorFlag = TRUE;
+                    }
+                    while (token[0]!='\"') { /* DC counts all the lines will be needed for the data */
+                        DC++;
+                    }
+                    if (token[0] == '\"' && token[strlen(token) - 1] == '\"') /* Counting the string's length */
+                        DC = DC + (int) strlen(token) - 1;
+                    else {
+                        printf("error in line %d:the string %s is invalid.\n", lineCounter, token);
+                        errorFlag = TRUE;
+                    }
+                    token = strtok(NULL, delimit); /*checking if the line is empty after the string name*/
+                    if (token != NULL) {
+                        printf("error in line %d: more than one parameter after .string\n",lineCounter);
+                        errorFlag = TRUE;
+                    }
+                }
+
+                /* Entry or Extern */
 
                 else if (!strcmp(token, ".entry")) {
                     token = strtok(NULL, delimit);
@@ -184,7 +202,7 @@ ymbol* first_pass(char *fileName,object* objects) {
                         if (strchr(token, '[') || strchr(token, ']')) {
                             r = (strchr(token, '[')) +1; /*to check if there is a register valid name*/
                             regNum = extractNumber(token); /*extracting the register number*/
-                            if (strchr(token, '[') && strchr(token, ']') && *r == 'r' && regNum <= 15 &&
+                            if (strchr(token, '[') && strchr(token, ']') && *r == 'r' && regNum <= 7 &&
                                 regNum >= 0) { /*checking the specific requirements*/
                             } else {
                                 printf("error in line %d: found \"[ or ]\" , but %s is not eligible index addressing command. \n",
