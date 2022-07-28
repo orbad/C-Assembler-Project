@@ -118,11 +118,12 @@ ymbol* first_pass(char *fileName,object* objects) {
                 else if (!strcmp(token, ".struct")) {
                     token = strtok(NULL, delimit);
                     if (token[0] == '\"'){
-                        printf("error in line %d: a struct cannot start with a string\n",lineCounter);
+                        printf("error in line %d: a struct cannot start with a string.\n",lineCounter);
                         errorFlag = TRUE;
                     }
                     while (token[0]!='\"') { /* DC counts all the lines will be needed for the data */
                         DC++;
+                        token = strtok(NULL, ", ");
                     }
                     if (token[0] == '\"' && token[strlen(token) - 1] == '\"') /* Counting the string's length */
                         DC = DC + (int) strlen(token) - 1;
