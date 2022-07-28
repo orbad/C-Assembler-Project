@@ -176,7 +176,7 @@ int* middleWordProcess(char *firstOperand, char *secondOperand, int funct, symbo
 
     int doubleOpFlag=FALSE;
     int extraWord=NEUTRAL,extraWord2=NEUTRAL;
-    char cleanLine[BINARY_LENGTH] = "00000000000000000000\0",line[BINARY_LENGTH];
+    char cleanLine[BINARY_LENGTH] = "0000000000\0",line[BINARY_LENGTH];
     int *values=(int *) malloc(value_Array_Size * sizeof(int *));; /*0 - errorFlag, 1 - printCounter, 3 - extSize*/
 
     strcpy(line, cleanLine);
@@ -322,7 +322,7 @@ int labelWordsProcess(int base, int offset, int source, FILE *newCode, int print
  * negative number is being dealt with in extract number - the "mashlim le2"
  * sending to print a single line every time*/
 int immediateWordProcess(char *operand, FILE *newCode, int printCounter) {
-    char cleanLine[BINARY_LENGTH] = "00000000000000000000\0",line[BINARY_LENGTH];
+    char cleanLine[BINARY_LENGTH] = "0000000000\0",line[BINARY_LENGTH];
     int num = extractNumber(operand);
     strcpy(line, cleanLine);
     line[A]++; /*immediate word is Absolute*/
