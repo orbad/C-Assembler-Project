@@ -53,10 +53,9 @@ int search_list(Table *table, String str)
     }
 }
 
-LinkedList* find_macro(LinkedList *list, String str)
+LinkedList* find_macro(Table *table, String str)
 {
-    LinkedList *curr;
-    curr = list;
+    LinkedList *curr = table->head;
 
     while (curr != NULL)
     {
@@ -64,8 +63,9 @@ LinkedList* find_macro(LinkedList *list, String str)
         {
             return curr;
         }
+        curr = curr->next;
     }
-    return;
+    return NULL;
 }
 
 void print_macro(LinkedList *list, FILE *file){

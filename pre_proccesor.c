@@ -18,22 +18,29 @@ void pre_proccesor(FILE *file, char fileName[])
     Table *macroTable;
     char delemiters[] = " \n\t\r";
 
-    sourceFile = fopen(file, "r");
+    /*sourceFile = fopen(fileName, "r");
     if (sourceFile == NULL)
     {
         printf("Source File openning failed");
         return;
-    }
+    }*/
 
-    newFile = fopen(strcat(fileName, ".am"), "w");
+    newFile = fopen(fileName, "w");
     if (newFile == NULL)
     {
         printf("Creating output file failed");
         return;
     }
 
+    /*newFile = fopen(strcat(fileName, ".am"), "w");
+    if (newFile == NULL)
+    {
+        printf("Creating output file failed");
+        return;
+    }*/
+
     /* If the source file hasn't opened or is empty, we don't initialze the Macro Table */
-    if ((fgets(line, LINE_LENGTH, sourceFile) != EOF))
+    if ((fgets(line, LINE_LENGTH, file) != NULL))
     {
         printf("Empty source file");
         return;
@@ -46,14 +53,14 @@ void pre_proccesor(FILE *file, char fileName[])
         return;
     }
 
-    while (fgets(line, LINE_LENGTH, sourceFile) != EOF)
+    while (fgets(line, LINE_LENGTH, file) != NULL)
     {
         if (macroFlag == FALSE)
         {
             strncpy(isMacro, line, 6);
             if ((strcmp(isMacro, "macro ")) == 0) /* Checks if the first word is "macro " */
             {
-                token = strchr(line, delemiters);
+                token = strchr(line, *delemiters);
                 if (search_list(macroTable, token) == 0) /* Valid macro insert */
                 {
                     macroFlag = TRUE;
@@ -63,11 +70,6 @@ void pre_proccesor(FILE *file, char fileName[])
                     {
                         printf("Memory allocation failed");
                         return;
-                    }
-                    else{
-                        printf("Macro is already defined");
-                        return;
-                    }
 
                     memcpy(curr->macroName, token, LINE_LENGTH); /* Names the macro */
 
@@ -128,9 +130,8 @@ void pre_proccesor(FILE *file, char fileName[])
         memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
         fputs(line, newFile);                              /* Prints the line into the new file */
     }
-
-
     free_list_of_lists(macroTable);
-    fclose(sourceFile);
+    fclose(file);
     fclose(newFile);
+    }
 }

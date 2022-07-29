@@ -21,6 +21,7 @@ typedef struct Table{
 }Table;
 
 void free_list(LinkedList *list);
-int search_list(Table *table, String str);
-void print_macro(LinkedList *list, FILE *file);
 void free_list_of_lists(Table *table);
+int search_list(Table *table, String str);
+LinkedList* find_macro(Table *table, String str);
+void print_macro(LinkedList *list, FILE *file);
