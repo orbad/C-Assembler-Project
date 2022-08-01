@@ -9,7 +9,6 @@ We create an .am file */
 void pre_proccesor(FILE *file, char fileName[])
 {
     int macroFlag = FALSE;
-    FILE *sourceFile;
     char *token;
     char isMacro[LINE_LENGTH];
     FILE *newFile;
@@ -18,13 +17,6 @@ void pre_proccesor(FILE *file, char fileName[])
     Table *macroTable;
     char delemiters[] = " \n\t\r";
 
-    /*sourceFile = fopen(fileName, "r");
-    if (sourceFile == NULL)
-    {
-        printf("Source File openning failed");
-        return;
-    }*/
-
     newFile = fopen(fileName, "w");
     if (newFile == NULL)
     {
@@ -32,12 +24,12 @@ void pre_proccesor(FILE *file, char fileName[])
         return;
     }
 
-    /*newFile = fopen(strcat(fileName, ".am"), "w");
+    newFile = fopen(strcat(fileName, ".am"), "w");
     if (newFile == NULL)
     {
         printf("Creating output file failed");
         return;
-    }*/
+    }
 
     /* If the source file hasn't opened or is empty, we don't initialze the Macro Table */
     if ((fgets(line, LINE_LENGTH, file) != NULL))
@@ -45,6 +37,7 @@ void pre_proccesor(FILE *file, char fileName[])
         printf("Empty source file");
         return;
     }
+    rewind(file); /* Resetting the cursor */
 
     macroTable = (Table *)malloc(sizeof(Table));
     if (macroTable == NULL)
@@ -53,85 +46,92 @@ void pre_proccesor(FILE *file, char fileName[])
         return;
     }
 
-    while (fgets(line, LINE_LENGTH, file) != NULL)
+while (fgets(line, LINE_LENGTH, file) != NULL)
     {
+                memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
         if (macroFlag == FALSE)
         {
             strncpy(isMacro, line, 6);
             if ((strcmp(isMacro, "macro ")) == 0) /* Checks if the first word is "macro " */
             {
                 token = strchr(line, *delemiters);
+                trimString(token);
+                removeTails(token);
                 if (search_list(macroTable, token) == 0) /* Valid macro insert */
                 {
                     macroFlag = TRUE;
-                    LinkedList *curr;
-                    curr = (LinkedList *)malloc(sizeof(LinkedList));
-                    if (curr == NULL)
+                    LinkedList *currList;
+                    currList = (LinkedList *)malloc(sizeof(LinkedList));
+                    if (currList == NULL)
                     {
                         printf("Memory allocation failed");
                         return;
-
-                    memcpy(curr->macroName, token, LINE_LENGTH); /* Names the macro */
+                    }
+                    memcpy(currList->macroName, token, LINE_LENGTH); /* Names the macro */
 
                     if (macroTable->head == NULL)
                     { /* If this is the first line */
-                        macroTable->head = curr;
-                        macroTable->tail = curr;
+                        macroTable->head = currList;
+                        macroTable->tail = currList;
                     }
                     else
                     { /* Manuelly insert each line at the end of the LinkedList */
-                        macroTable->tail->next = curr;
-                        macroTable->tail = curr;
+                        macroTable->tail->next = currList;
+                        macroTable->tail = currList;
                     }
+                    continue; /* Not pronting the macro defenition to*/
+                }
+            }
+            else
+            {
+                if (strcmp(line,"\n") == 0){
+                     fputs(line, newFile); /* print the empty line */
+                     continue;
+                }
+                else if (find_macro(macroTable, line) != NULL)
+                {
+                    print_macro(find_macro(macroTable, line), newFile);
+                    continue;
                 }
             }
         }
         else
         { /* Filling the lines of the macro, each line is a node */
+            strncpy(isMacro, line, 8);
             if (strcmp(isMacro, "endmacro") == 0)
             { /* End of macro*/
                 macroFlag = FALSE;
+                memset(isMacro, '\0', sizeof(char) * LINE_LENGTH);
                 continue;
             }
-            if (find_macro(macroTable, line) != NULL)
-            {
-                print_macro(find_macro(macroTable, line), newFile);
-            }
+
             /* Sets the lines of the macro*/
-            Node *curr;           
-            curr = (Node *)malloc(sizeof(Node));
-            if (curr == NULL)
+            Node *currNode;
+            currNode = (Node *)malloc(sizeof(Node));
+            if (currNode == NULL)
             {
                 printf("Memory allocation failed");
                 return;
             }
 
-            LinkedList *list; 
-            list = (LinkedList *)malloc(sizeof(LinkedList));
-            if (list == NULL)
-            {
-                printf("Memory allocation failed");
-                return;
-            }
+            memcpy(currNode->line, line, LINE_LENGTH);
 
-            strcpy(line, curr->line);
-
-            if (list->head == NULL)
-            { /* If this is the first line */
-                list->head = curr;
-                list->tail = curr;
+            if (macroTable->tail->tail == NULL) /* The last linked list is the one we're working on */
+            {                                   /* If this is the first line */
+                macroTable->tail->head = currNode;
+                macroTable->tail->tail = currNode;
             }
             else
             { /* Manuelly insert each line at the end of the LinkedList*/
-                list->tail->next = curr;
-                list->tail = curr;
+                macroTable->tail->tail->next = currNode;
+                macroTable->tail->tail = currNode;
             }
         }
-        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
         fputs(line, newFile);                              /* Prints the line into the new file */
+        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
+        memset(line, '\0', sizeof(char) * LINE_LENGTH);    /* resets the line */
     }
     free_list_of_lists(macroTable);
     fclose(file);
     fclose(newFile);
     }
-}

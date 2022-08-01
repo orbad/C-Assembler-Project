@@ -1,3 +1,6 @@
+#ifndef __PRE_PROCCESOR_H__
+#define __PRE_PROCCESOR_H__
+
 #include "header.h"
 
 /* Struct decleration */
@@ -20,8 +23,11 @@ typedef struct Table{
     struct LinkedList * tail; 
 }Table;
 
+void removeTails(char *line);
 void free_list(LinkedList *list);
 void free_list_of_lists(Table *table);
 int search_list(Table *table, String str);
 LinkedList* find_macro(Table *table, String str);
 void print_macro(LinkedList *list, FILE *file);
+
+#endif

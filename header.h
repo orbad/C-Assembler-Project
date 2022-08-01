@@ -1,3 +1,6 @@
+#ifndef __HEADER_H__
+#define __HEADER_H__
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -99,3 +102,5 @@ int memCheck(char* token, sysReserved *memory );
 int extractNumber (char * word);
 
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter);
+
+#endif
