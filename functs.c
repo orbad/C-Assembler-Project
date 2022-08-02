@@ -2,7 +2,7 @@
 
 
 
-/*removing the whitespaces at the end of each sentence*/
+/* Removing the whitespaces at the end of each sentence */
 void removeTails(char * line)
 {
     int index, i;
@@ -21,7 +21,7 @@ void removeTails(char * line)
     line[index + 1] = '\0';
 }
 
-/*searching the action table list for actions */
+/* Searching the action table list for actions */
 int findAction(char* token, action table[] ) {
     int i;
     for (i = DEF_VAL; i < instructions_size; i++)
@@ -30,7 +30,7 @@ int findAction(char* token, action table[] ) {
     return NEUTRAL;
 }
 
-/*searching the system Reserved table list  */
+/* Searching the system Reserved table list  */
 int memCheck(char* token, sysReserved memory[] ) {
     int i;
     for (i = DEF_VAL; i < sys_res_size; i++)
@@ -40,7 +40,7 @@ int memCheck(char* token, sysReserved memory[] ) {
 
 }
 
-/*getting a number out of a string*/
+/* Getting a number out of a string*/
 int extractNumber (char * word){
     char c;
     int negative = FALSE;
@@ -60,7 +60,7 @@ int extractNumber (char * word){
     return num;
 }
 
-/*checking if the token is a familiar symbol from the symbol table*/
+/* Checking if the token is a known symbol from the symbol table */
 int isSymbol(string token, symbol * symTable, int tableSize){
     int i;
     for (i = 0; i <= tableSize; i++) {
@@ -70,7 +70,23 @@ int isSymbol(string token, symbol * symTable, int tableSize){
     return NEUTRAL;
 }
 
-/*the binary translation is being calculated the other way (left to right).
+
+/* This method receives an integer (doesn't matter if positive or negative) from -1022 to 1023
+    And provides a 2-length array which consists the number's representation in the project's 32-base */
+char* specialBaseConverter(int val)
+{
+    static char conv[3] = { 0 };
+    const char base[] = "!@#$%^&*<>abcdefghijklmnopqrstuv\0";
+    int first, second;
+    first = val & 31; /* First 5 bits */
+    second = ((val & ~31) >> 5) & 31; /* second 5 bits */
+
+    conv[0] = base[second];
+    conv[1] = base[first];
+    return conv;
+}
+
+/* The binary translation is being calculated the other way (left to right).
  * before printing we reverse it */
 char *strReverse(char *str)
 {
@@ -87,8 +103,8 @@ char *strReverse(char *str)
     return str;
 }
 
-/*this is the main print to ob file functions.
- * a single binary line is being reversed and transformed to the special base.
+/* This is the main print to ob file functions.
+ * a single binary line is being reversed and transformed to the project's 32 special base.
   */
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
     int i = DEF_VAL, j = DEF_VAL, index = 1, counter = DEF_VAL;
