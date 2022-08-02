@@ -9,12 +9,12 @@
 #include "first_pass.h"
 
 
-ymbol* first_pass(char *fileName,object* objects) {
+symbol* first_pass(char *fileName,object* objects) {
 
     int IC = OPS_FIRST_VALUE, DC = DEF_VAL, tableSize = DEF_VAL, lineCounter = DEF_VAL, symbolInd = NEUTRAL, actionInd = NEUTRAL, memInd = NEUTRAL, regNum=DEF_VAL;
     int errorFlag = FALSE, programFailure=FALSE, newSymbol = FALSE;
 
-    string line, copyLine, validLabel;
+    String line, copyLine, validLabel;
     char delimit[] = " \n\t\r ,";
     char *token,*r;
 
@@ -84,7 +84,7 @@ ymbol* first_pass(char *fileName,object* objects) {
                 newSymbol = TRUE;
             }
 
-            actionInd = findAction(token, objects->actionTable); /*storing the action index if there is*/
+            actionInd = findAction(token, objects->actionTable); /* Storing the action index if there is*/
 
 
             /*dealing with data*/
@@ -121,7 +121,7 @@ ymbol* first_pass(char *fileName,object* objects) {
                         printf("error in line %d: a struct cannot start with a string.\n",lineCounter);
                         errorFlag = TRUE;
                     }
-                    while (token[0]!='\"') { /* DC counts all the lines will be needed for the data */
+                    if (isdigit(token[0])) { /* We check whether the 1st character is a number in .struct */
                         DC++;
                         token = strtok(NULL, ", ");
                     }
@@ -142,7 +142,7 @@ ymbol* first_pass(char *fileName,object* objects) {
 
                 else if (!strcmp(token, ".entry")) {
                     token = strtok(NULL, delimit);
-                    if (token == NULL) {/*word after .entry*/
+                    if (token == NULL) {/* Word after .entry*/
                         printf("error in line %d: no label found after .entry\n",lineCounter);
                         errorFlag = TRUE;
                     }
@@ -189,16 +189,16 @@ ymbol* first_pass(char *fileName,object* objects) {
                 errorFlag = TRUE;
             }
             else if (actionInd >= 0) {
-                /*updating the symbol table for action operands values*/
+                /* Updating the symbol table for action operands values */
                 if (newSymbol) {
                     symTable[tableSize].source = NEUTRAL;
                 }
-                IC++; /*first line in code is opcode*/
-                if (actionInd < 14) /*not rts or stop*/
+                IC++; /* First line in code is opcode*/
+                if (actionInd < 14) /* Not rts or hlt */
                 {
-                    IC++; /*second line in anything beside rts or stop*/
+                    IC++; /* Second line in anything beside rts or hlt */
                     token = strtok(NULL, delimit);
-                    while (token) { /*getting the operands*/
+                    while (token) { /* Getting the operands */
                         memInd = memCheck(token, objects->memory);
                         if (strchr(token, '[') || strchr(token, ']')) {
                             r = (strchr(token, '[')) +1; /*to check if there is a register valid name*/
@@ -229,13 +229,13 @@ ymbol* first_pass(char *fileName,object* objects) {
         }
     }
 
-    /*storing the dynamic memory variables */
+    /* Storing the dynamic memory variables */
     objects->memVariables[symTable_size].num=tableSize;
     objects->memVariables[DC_size].num=DC;
     objects->memVariables[IC_size].num=IC;
     objects->memVariables[err_flag].num=programFailure;
 
-    /*only the file need to be closed here */
+    /* Only the file need to be closed here */
     fclose(sFile);
 
     return symTable;
