@@ -1,6 +1,6 @@
-/**
+   /**
  * second_pass function builds the output files, translate the words to bits, and uses the symbol table.
- * every line is being splitted to words, and each kind of operand gets is exact translation
+ * every line is being split to words, and each kind of operand gets is exact translation
  * the basic idea is sending each process of operand, translation or special case into a different function.
  * at the end, the entries and externals files are being made.
  * author: Or Badani 316307586, Eli Gandin 209327915
@@ -12,17 +12,17 @@
 void second_pass (char *fileName, symbol * symTable,object * objects) {
 
     int i,action,funct,entryUpdate,lineCounter=DEF_VAL,DC=DEF_VAL,lastExtSize=DEF_VAL,extSize=DEF_VAL,symTableSize=objects->memVariables[symTable_size].num,printCounter=OPS_FIRST_VALUE;
-    int ICF= (objects->memVariables[IC_size].num) - OPS_FIRST_VALUE; /*ICF is really -100*/
-    int errorFlag = FALSE,programFailure=FALSE;
-    string line,copyLine,firstPrintedLine;
-    char *token,*tokenB;
+    int ICF= (objects->memVariables[IC_size].num) - OPS_FIRST_VALUE; /*ICF value is -100*/
+    int errorFlag = FALSE, programFailure=FALSE;
+    String line, copyLine, firstPrintedLine;
+    char *token, *tokenB;
     char delimit[] = " \n\t\r ,";
-    char cleanLine[BINARY_LENGTH] = "0000000000\0",binaryLine[BINARY_LENGTH];
+    char cleanLine[BINARY_LENGTH] = "0000000000\0", binaryLine[BINARY_LENGTH];
     int *values; /* This int pointer array will get the int array from middleWordFunctions */
     FILE *sFile,*newCode;
-    dataList *dataLine=(dataList *) malloc((objects->memVariables[DC_size].num + 1) * sizeof(dataList)); /*will hold the data lines*/
+    dataList *dataLine=(dataList *) malloc((objects->memVariables[DC_size].num + 1) * sizeof(dataList)); /* Will hold the data lines */
     extAddress *e,*extAdd;
-    extAdd= (extAddress *) malloc( sizeof(extAddress));/*will hold the extern addresses*/
+    extAdd= (extAddress *) malloc( sizeof(extAddress));/* Will hold all the extern addresses */
 
     sFile = fopen(strcat(fileName,".am") , "r");
     fileName[strlen(fileName)-3]='\0';
@@ -30,39 +30,40 @@ void second_pass (char *fileName, symbol * symTable,object * objects) {
     fileName[strlen(fileName)-3]='\0';
 
     strcpy(binaryLine, cleanLine);
-    /*adding the first new code line, with IC and DC values*/
+
+    /* Adding the first new code line, with IC and DC values */
     sprintf(firstPrintedLine, "\t%d %d\n", ICF, objects->memVariables[DC_size].num);
     fputs(firstPrintedLine, newCode);
 
 
-    while (fgets(line, MAX_CHAR, sFile) != NULL) {
-        lineCounter++; /*counting the original lines for error print*/
+    while (fgets(line, LINE_LENGTH, sFile) != NULL) {
+        lineCounter++; /* Counting the original lines in order to print errors */
 
         strcpy(copyLine, line);
-        token = strtok(copyLine, "\n"); /*in the beginning token gets the full line, and checks if it is empty*/
+        token = strtok(copyLine, "\n"); /* At first token gets the full line, and checks whether the line is empty */
 
-        /*skipping empty\whitespaces\comment lines*/
-        if (!token)
+        /* empty\whitespaces\comment handling*/
+        if (!token) /* If token is an empty line, then ignore it */
             continue;
 
         while (isspace((unsigned char) *token)) token++;
         if (strcmp("", token) == 0||line[0]==';')
             continue;
 
-        token = strtok(copyLine, delimit); /*token gets the first word */
+        token = strtok(copyLine, delimit); /* Token gets the first word of the line */
 
-        if (strchr(token, ':')) /*skipping labels*/
+        if (strchr(token, ':')) /* Skipping labels */
             token = (strtok(NULL, delimit));
 
         while (isspace((unsigned char) *token)) token++;
 
 
-        if (strstr(token, ".entry")) { /*instruction line*/
-            token = (strtok(NULL, delimit)); /*the first word of the sentence*/
+        if (strstr(token, ".entry")) { /* Instruction line */
+            token = (strtok(NULL, delimit)); /* The first word of the sentence */
 
             removeTails(token);
             entryUpdate=isSymbol(token,symTable,symTableSize);
-            if (entryUpdate==NEUTRAL) {
+            if (entryUpdate==NEUTRAL) { /* If entry isn't mentioned in the symbol table */
                 printf("error in line %d: %s does not appear in symbol table \n",printCounter,token);
                 errorFlag = TRUE;
                 continue;
@@ -73,34 +74,42 @@ void second_pass (char *fileName, symbol * symTable,object * objects) {
             }
         }
 
-        if (strstr(token, ".extern")) { /*avoiding extern line*/
+        if (strstr(token, ".extern")) { /* Avoiding extern line */
             continue;
         }
 
         if ((strstr(token, ".data"))) {
-            token = (strtok(NULL, "\n")); /*getting the full sentence content, so the delimiter is \n*/
+            token = (strtok(NULL, "\n")); /* Getting the full sentence content, so the delimiter is \n */
             DC = dataTranslation(token, dataLine, DC);
             continue;
         }
 
-        /*translating data values*/
+        /* Translating data values*/
         if (strstr(token, ".string")) {
             token = (strtok(NULL, delimit));
             DC = stringTranslation(token, dataLine, DC);
             continue;
         }
 
+        /* Translating struct values*/
+        if (strstr(token, ".struct")) {
+            token = (strtok(NULL, delimit));
+            DC = dataTranslation(token, dataLine, DC); /* Number handling (same as data) */
+            token = (strtok(NULL, delimit));
+            DC = stringTranslation(token, dataLine, DC); /* String handling */
+            continue;
+        }
 
 
-        binaryLine[A]++; /*first line will always be Absolute */
+        binaryLine[A]++; /* First line will always be Absolute (00 in A/R/E field) */
 
         action = findAction(token, objects->actionTable);
 
-        /*creating the first binary line*/
+        /* Creating the first binary line */
         printCounter=firstWordProcess(objects->actionTable[action].opcode, binaryLine, newCode, printCounter);
 
 
-        /*all actions beside rts and stop require more than one word*/
+        /* All actions beside rts and hlt require more than one word */
         if (action<14) {
 
             token = (strtok(NULL, delimit));
@@ -108,9 +117,7 @@ void second_pass (char *fileName, symbol * symTable,object * objects) {
                 tokenB = (strtok(NULL, delimit));
 
 
-            funct=objects->actionTable[action].funct; /*getting the specific action's funct*/
-
-            /*will make the second binary codee, and afterwords the rest*/
+            /* Will make the second binary code, and afterwords the rest */
             values=middleWordProcess(token, tokenB, funct, symTable, symTableSize, newCode,extAdd,extSize, printCounter,errorFlag);
 
             errorFlag=values[errorFlag_ind];
@@ -130,13 +137,13 @@ void second_pass (char *fileName, symbol * symTable,object * objects) {
             extAdd = e;
         }
 
-        printCounter++; /*for next line to print*/
-        /*cleaning the line towards the next line*/
+        printCounter++; /* For next line printing*/
+        /* Cleaning the current line towards the next line */
         strcpy(binaryLine, cleanLine);
 
     }
 
-    for(i=0;i<(DC); i++) { /*printing data lines from datalist to new code*/
+    for(i=0;i<(DC); i++) { /* Printing data lines from datalist to new code */
         specialBasePrint(dataLine[i].dLine, newCode, printCounter);
         printCounter++;
     }
@@ -337,7 +344,7 @@ int immediateWordProcess(char *operand, FILE *newCode, int printCounter) {
     return printCounter;
 }
 
-/*main translation function (does not print).
+/* Main translation function (does not print).
  * this functions gets the exact bits length, the location on the line and the value,
  * it translates by dividing the number by 2 every time, and store the reminder.*/
 void bitTranslation(int bitLength, int index, int value, char line[]) {
@@ -417,7 +424,7 @@ int dataTranslation(char * token, dataList *dataLine,int DC) {
 /*making the ent file, printing the special requirements*/
 void makeEntFile(string fileName,symbol *symTable,dynamicMem *memVariables) {
     int i;
-    char line[2*MAX_CHAR]; /*line will be getting 2 integers and chars added to it - so make it bigger */
+    char line[2*LINE_LENGTH]; /*line will be getting 2 integers and chars added to it - so make it bigger */
     FILE *entries = fopen(strcat(fileName, ".ent"), "w");
     fileName[strlen(fileName)-4]='\0'; /*removing the .ent*/
 
@@ -441,7 +448,7 @@ void updateExtAdd(string label, int address,extAddress *extAdd,int extSize) {
 /*making the externals file using the extAdd object we collected*/
 void makeExtFile(string fileName,extAddress *extAdd,int extSize) {
     int i;
-    char line[MAX_CHAR * 2],tempStr[MAX_CHAR * 2]; /*line will be getting 2 string 80 chars size. */
+    char line[LINE_LENGTH * 2],tempStr[LINE_LENGTH * 2]; /*line will be getting 2 string 80 chars size. */
     FILE *externals = fopen(strcat(fileName, ".ext"), "w");
 
     fileName[strlen(fileName)-4]='\0'; /*removing the .ent*/
