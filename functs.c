@@ -1,7 +1,6 @@
 #include "header.h"
 
 
-
 /* Removing the whitespaces at the end of each sentence */
 void removeTails(char * line)
 {
@@ -103,16 +102,43 @@ char *strReverse(char *str)
     return str;
 }
 
+void intTo32BasePrint(int printCounter, int binaryValue){ /* Need to add file writing */
+
+    printf("%s\t", specialBaseConverter(printCounter));
+    printf("%s\n", specialBaseConverter(binaryValue));
+}
+
+void binaryTo32BasePrint(int printCounter, char binaryString[]){ /* Need to add file writing */
+    int num1;
+    num1=atoi(binaryString);
+    int rem,base=1;
+    int decimal_num=0;
+    while (num1>0){
+        rem=num1%10;
+        decimal_num+= rem*base;
+        num1/=10;
+        base *=2;
+    }
+    printf("%s\t", specialBaseConverter(printCounter));
+    printf("%s\n", specialBaseConverter(decimal_num));
+}
+
+int binaryConnection(operandBuilder a){
+    int sum=0;
+    sum+=(a.opcode<<opcode_add) + (a.source_operand<<source_add) + (a.destination_operand<<dest_add) + (a.ARE);
+    return sum;
+}
+
 /* This is the main print to ob file functions.
  * a single binary line is being reversed and transformed to the project's 32 special base.
   */
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
     int i = DEF_VAL, j = DEF_VAL, index = 1, counter = DEF_VAL;
     int num2;
-    string fullLine;
-    char *pt; /*for strtol*/
-    char cleanBinary[] = "00000", binary[] = "00000",hex[5];
-    char code[] = "A0-B0-C0-D0-E0\n", newLine[MAX_BINARY]="0000000000\0";
+    String fullLine;
+    char *pt; /* For strtol functionality */
+    char cleanBinary[] = "00000", binary[] = "00000", base32[3];
+    char code[11] = "", newLine[MAX_BINARY]="0000000000\0";
 
     strcpy(newLine, reversedLine);
     strReverse(newLine);
@@ -123,14 +149,14 @@ void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
             binary[i] = newLine[counter];
             counter++;
         }
-        /*we take the convert the number to hexadecimal using sprintf and %x*/
+        /* We take the number and convert it to the project's 32-base using sprintf and specialBaseConverter function*/
         num2 = strtol(binary, &pt, 2);
-        sprintf(hex, "%x", num2);
-        code[index] = hex[0];
-        index = index + 3;
+        sprintf(base32, "%s", specialBaseConverter(num2));
+        code[index] = base32[0];
+        index++;
         strcpy(binary, cleanBinary);
     }
-    sprintf(fullLine,"0%d ",printCounter);
+    sprintf(fullLine,"%s", specialBaseConverter(printCounter));
     strcat(fullLine,code);
     fputs( fullLine,file);
 
@@ -253,7 +279,7 @@ void memoryBuild(sysReserved *memory) {
     memory[20].words="prn";
     memory[21].words="jsr";
     memory[22].words="rts";
-    memory[23].words="stop";
+    memory[23].words="hlt";
     memory[24].words=".data";
     memory[25].words=".string";
     memory[26].words=".struct";
