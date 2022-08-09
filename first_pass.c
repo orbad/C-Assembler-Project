@@ -200,18 +200,20 @@ symbol* first_pass(char *fileName,object* objects) {
                     token = strtok(NULL, delimit);
                     while (token) { /* Getting the operands */
                         memInd = memCheck(token, objects->memory);
-                        if (strchr(token, '[') || strchr(token, ']')) {
-                            r = (strchr(token, '[')) +1; /*to check if there is a register valid name*/
-                            regNum = extractNumber(token); /*extracting the register number*/
-                            if (strchr(token, '[') && strchr(token, ']') && *r == 'r' && regNum <= 7 &&
-                                regNum >= 0) { /*checking the specific requirements*/
-                            } else {
-                                printf("error in line %d: found \"[ or ]\" , but %s is not eligible index addressing command. \n",
-                                       lineCounter, token);
-                                errorFlag = TRUE;
-                            }
-                        }
+                        // Should be changed for MEEON GISHA YESHIRA - .struct reference - numeric operand, only 1 (int) or 2 (String) otherwise print error - maybe uppon tests are required, like number vs 1 and string vs 2 , make error if not .
 
+
+//                        if (strchr(token, '[') || strchr(token, ']')) {
+//                            r = (strchr(token, '[')) +1; /*to check if there is a register valid name*/
+//                            regNum = extractNumber(token); /*extracting the register number*/
+//                            if (strchr(token, '[') && strchr(token, ']') && *r == 'r' && regNum <= 7 &&
+//                                regNum >= 0) { /*checking the specific requirements*/
+//                            } else {
+//                                printf("error in line %d: found \"[ or ]\" , but %s is not eligible index addressing command. \n",
+//                                       lineCounter, token);
+//                                errorFlag = TRUE;
+//                            }
+//                        }*//
                         if (token[0] == '#')
                             IC++;
                         else if (memInd <= 15 && memInd != NEUTRAL)
