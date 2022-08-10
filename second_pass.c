@@ -116,7 +116,7 @@ void second_pass (char *fileName, symbol * symTable,object * objects) {
                 tokenB = (strtok(NULL, delimit));
 
 
-            /* Will make the second binary code, and afterwords the rest */
+            /* Will make the second binary code, and afterwards the rest */
             values=middleWordProcess(token, tokenB, memBuild, symTable, symTableSize, newCode,extAdd,extSize, printCounter,errorFlag);
 
             errorFlag=values[errorFlag_ind];
@@ -204,8 +204,11 @@ int* middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder *
     /* To know in advance if we need a source operand */
     if(secondOperand)
         doubleOpFlag = TRUE;
+    else{
+        memBuilder->source_operand=A;
+    }
 
-    /*first and second operand translations*/
+    /* First and second operand translations */
     extraWord=operandTranslation(firstOperand , memBuilder, doubleOpFlag, symTable,symTableSize,extAdd,printCounter,&extSize,&errorFlag);
 
     /*only execute if we have 2 operands */
@@ -221,13 +224,13 @@ int* middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder *
     /*only for extra words*/
 
     if (extraWord>=DEF_VAL) /*positive means we found a symbol*/
-        printCounter=labelWordsProcess(symTable[extraWord].base, symTable[extraWord].offset, symTable[extraWord].source, newCode, printCounter);
+        printCounter=labelWordsProcess(symTable[extraWord].address, symTable[extraWord].source, newCode, printCounter);
 
     if (extraWord==-2)  /*means we found # in operand - so its direct*/
         printCounter=immediateWordProcess(firstOperand, newCode,printCounter);
     /*second operand extra words*/
     if (extraWord2>=DEF_VAL)
-        printCounter=labelWordsProcess(symTable[extraWord2].base, symTable[extraWord2].offset, symTable[extraWord2].source, newCode, printCounter);
+        printCounter=labelWordsProcess(symTable[extraWord2].address, symTable[extraWord2].source, newCode, printCounter);
 
     if (extraWord2==-2)
         printCounter=immediateWordProcess(secondOperand, newCode,printCounter);
@@ -296,36 +299,44 @@ int  operandTranslation(char * operand, operandBuilder *memBuild, int isSource, 
 
 /* Dealing with a label word , adding the collected address from symbol table
  * sending to print a single line every time */
-int labelWordsProcess(int base, int offset, int source, FILE *newCode, int printCounter) {
-    char cleanLine[BINARY_LENGTH] = "0000000000\0",line[BINARY_LENGTH];
-    strcpy(line,cleanLine);
+int labelWordsProcess(int address, int source, FILE *newCode, int printCounter) {
+//    char cleanLine[BINARY_LENGTH] = "0000000000\0",line[BINARY_LENGTH];
+       int sum;
+       operandBuilder* labelBuild;
+       strcpy(line,cleanLine);
 
+       labelBuild->destination_operand=address;
+       labelBuild->source_operand=A;
+       labelBuild->opcode=A;
     /* Source was stored as E only if it was an extern. any other way its R */
     if (source<=0)
-        line[R]++; /* Source contains the correct bit number for R or E*/
+        labelBuild->ARE=R; /* Source contains the correct bit number for R or E*/
     else
-        line[source]++;
+        labelBuild->ARE=source;
 
 
     /*Translating the base to a new binary line*/
-    bitTranslation(binary_line_len,binary_line_ind,base,line);
+//    bitTranslation(binary_line_len,binary_line_ind,base,line);
     printCounter++;
     // specialBasePrint(line, newCode, printCounter);
-    binaryTo32BasePrint(printCounter,newCode,line);
+    sum= binaryConnection(labelBuild);
+    intTo32BasePrint(printCounter,newCode,sum);
 
 
-    strcpy(line,cleanLine);
+//    strcpy(line,cleanLine);
 
-    if (source==NEUTRAL)
-        line[R]++; /*source contains the correct bit number for R or E*/
-    else
-        line[source]++; /*source contains the correct bit number for E*/
 
-    /*Translating the offset to a new binary line*/
-    bitTranslation(binary_line_len,binary_line_ind,offset,line);
-    printCounter++;
+    /* Looks like offset handling */
+//    if (source==NEUTRAL)
+//       labelBuild->ARE=R; /*source contains the correct bit number for R or E*/
+//    else
+//        labelBuild->ARE=source; /* source contains the correct bit number for E */
+//
+//    /*Translating the offset to a new binary line*/
+//    bitTranslation(binary_line_len,binary_line_ind,offset,line);
+//    printCounter++;
     // specialBasePrint(line, newCode, printCounter);
-       binaryTo32BasePrint(printCounter,newCode,line);
+
     return printCounter;
 }
 
