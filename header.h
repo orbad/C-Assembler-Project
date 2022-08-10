@@ -88,7 +88,7 @@ void langBuild(langReserved *base);
 
 char* specialBaseConverter(int val);
 
-void intTo32BasePrint(int printCounter, FILE *file ,int binaryValue); /* Need to add file writing */
+void intTo32BasePrint(int printCounter, FILE *file ,int binaryValue); 
 
 int binaryConnection(operandBuilder a);
 
