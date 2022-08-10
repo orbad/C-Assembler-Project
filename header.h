@@ -43,8 +43,8 @@ typedef struct dynamic_values_and_error_flags {
 typedef struct Symbol {
     String name;
     int address;
-    int base;
-    int offset;
+    int base; /* now required  - address is base+offset*/
+    int offset; /* need to replace */
     int source; /*A\R\E */
 
 } symbol;
@@ -85,6 +85,14 @@ void tableBuild(action *opcode);
 
 /*Project's 32-base language*/
 void langBuild(langReserved *base);
+
+char* specialBaseConverter(int val);
+
+void intTo32BasePrint(int printCounter, FILE *file ,int binaryValue); /* Need to add file writing */
+
+int binaryConnection(operandBuilder a);
+
+void binaryTo32BasePrint(int printCounter, FILE *file ,char binaryString[]);
 
 void memoryBuild(sysReserved *memory);
 
