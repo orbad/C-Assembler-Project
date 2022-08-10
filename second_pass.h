@@ -43,11 +43,11 @@ int structTranslation(char * token, dataList *dataLine, int DC); /* Ongoing Proc
 int dataTranslation(char * token, dataList *dataLine, int DC);
 
 
-int* middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder memBuild, symbol *symTable, int symTableSize, FILE *newCode,extAddress *extAdd,int extSize, int printCounter,int errorFlag);
+int* middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder *memBuild, symbol *symTable, int symTableSize, FILE *newCode,extAddress *extAdd,int extSize, int printCounter,int errorFlag);
 
 int operandTranslation(char * operand, operandBuilder *operandBuilder, int isSource, symbol *symTable, int symTableSize,extAddress *extAdd,int printCounter,int *extSize,int *errorFlag);
 
-int labelWordsProcess(int base, int offset, int source, FILE *newCode, int printCounter);
+int labelWordsProcess(int address, int source, FILE *newCode, int printCounter);
 
 int immediateWordProcess(char *operand, FILE *newCode, int printCounter);
 
