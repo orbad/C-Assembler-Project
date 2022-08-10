@@ -7,6 +7,6 @@ enum memory_index{mem_data_ind=34 ,mem_cmd_ind=32, mem_reg_ind=8 };
 
 int isValidSymbol(string label, symbol * symTable, int tableSize, sysReserved *memory, int lineCounter);
 
-void addSymbol(string label, int address, int source, int tableSize, symbol *symTable);
+void addSymbol(String label, int address, int source, int tableSize, symbol *symTable);
 
 
