@@ -102,15 +102,17 @@ char *strReverse(char *str)
     return str;
 }
 
-void intTo32BasePrint(int printCounter, int binaryValue){ /* Need to add file writing */
+void intTo32BasePrint(int printCounter, FILE *file ,int binaryValueInInt){
 
-    printf("%s\t", specialBaseConverter(printCounter));
-    printf("%s\n", specialBaseConverter(binaryValue));
+    fprintf(file ,"%s\t", specialBaseConverter(printCounter));
+    fprintf(file,"%s\n", specialBaseConverter(binaryValueInInt));
 }
 
-void binaryTo32BasePrint(int printCounter, char binaryString[]){ /* Need to add file writing */
+void binaryTo32BasePrint(int printCounter , FILE *file ,char binaryString[]){
     int num1;
-    num1=atoi(binaryString);
+    char[] reverseBinaryString= strReverse(binaryString);
+    num1=atoi(reverseBinaryString);
+    // num1=atoi(binaryString); /* Check in tests whether strReverse is needed */
     int rem,base=1;
     int decimal_num=0;
     while (num1>0){
@@ -119,8 +121,10 @@ void binaryTo32BasePrint(int printCounter, char binaryString[]){ /* Need to add 
         num1/=10;
         base *=2;
     }
-    printf("%s\t", specialBaseConverter(printCounter));
-    printf("%s\n", specialBaseConverter(decimal_num));
+    // printf("%s\t", specialBaseConverter(printCounter));
+    fprintf(file, "%s\t", specialBaseConverter(printCounter));
+    // printf("%s\n", specialBaseConverter(decimal_num));
+    fprintf(file, "%s\n", specialBaseConverter(decimal_num));
 }
 
 int binaryConnection(operandBuilder a){
