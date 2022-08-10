@@ -11,7 +11,7 @@
 
 symbol* first_pass(char *fileName,object* objects) {
 
-    int IC = OPS_FIRST_VALUE, DC = DEF_VAL, tableSize = DEF_VAL, lineCounter = DEF_VAL, symbolInd = NEUTRAL, actionInd = NEUTRAL, memInd = NEUTRAL, regNum=DEF_VAL;
+    int IC = OPS_FIRST_VALUE, DC = DEF_VAL, tableSize = DEF_VAL, lineCounter = DEF_VAL, symbolInd = NEUTRAL, actionInd = NEUTRAL, memInd = NEUTRAL, refNum=DEF_VAL;
     int errorFlag = FALSE, programFailure=FALSE, newSymbol = FALSE;
 
     String line, copyLine, validLabel;
@@ -200,20 +200,16 @@ symbol* first_pass(char *fileName,object* objects) {
                     token = strtok(NULL, delimit);
                     while (token) { /* Getting the operands */
                         memInd = memCheck(token, objects->memory);
-                        // Should be changed for MEEON GISHA YESHIRA - .struct reference - numeric operand, only 1 (int) or 2 (String) otherwise print error - maybe uppon tests are required, like number vs 1 and string vs 2 , make error if not .
-
-
-//                        if (strchr(token, '[') || strchr(token, ']')) {
-//                            r = (strchr(token, '[')) +1; /*to check if there is a register valid name*/
-//                            regNum = extractNumber(token); /*extracting the register number*/
-//                            if (strchr(token, '[') && strchr(token, ']') && *r == 'r' && regNum <= 7 &&
-//                                regNum >= 0) { /*checking the specific requirements*/
-//                            } else {
-//                                printf("error in line %d: found \"[ or ]\" , but %s is not eligible index addressing command. \n",
-//                                       lineCounter, token);
-//                                errorFlag = TRUE;
-//                            }
-//                        }*//
+                        if (strchr(token, '.')) {
+                            r = (strchr(token, '.')) +1; /* Extracting the struct's reference number as a String */
+                            refNum = extractNumber(r); /* Extracting the struct's reference number (int) , to check whether there is a valid reference number (only 1 or 2) */
+                            if (strchr(token, '.') && refNum <= 2 && refNum >= 1) { /* Checking the specific requirements */
+                            } else {
+                                printf("error in line %d: found \".\" , but %s is not eligible index addressing command. \n",
+                                       lineCounter, token);
+                                errorFlag = TRUE;
+                            }
+                        }
                         if (token[0] == '#')
                             IC++;
                         else if (memInd <= 15 && memInd != NEUTRAL)
@@ -245,7 +241,7 @@ symbol* first_pass(char *fileName,object* objects) {
 
 
 /*this function checks all the requirements from a symbol, collects the error flag and prints errors */
-int isValidSymbol(string label, symbol * symTable, int tableSize, sysReserved *memory, int lineCounter) {
+int isValidSymbol(String label, symbol * symTable, int tableSize, sysReserved *memory, int lineCounter) {
     int currIndex, memInd;
     int errorFlag = FALSE;
     int i;
@@ -298,10 +294,8 @@ int isValidSymbol(string label, symbol * symTable, int tableSize, sysReserved *m
 
 /*adding a new symbol to symTable, with all the collected values available.
  * a -1 will be entered for non collected values */
-void addSymbol(string label, int address,  int source, int tableSize, symbol *symTable) {
+void addSymbol(String label, int address,  int source, int tableSize, symbol *symTable) {
     strcpy(symTable[tableSize].name, label);
     symTable[tableSize].address = address;
     symTable[tableSize].source = source;
-    symTable[tableSize].base = address - (address % 16);
-    symTable[tableSize].offset = address % 16;
 }
