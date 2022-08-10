@@ -121,9 +121,7 @@ void binaryTo32BasePrint(int printCounter , FILE *file ,char binaryString[]){
         num1/=10;
         base *=2;
     }
-    // printf("%s\t", specialBaseConverter(printCounter));
     fprintf(file, "%s\t", specialBaseConverter(printCounter));
-    // printf("%s\n", specialBaseConverter(decimal_num));
     fprintf(file, "%s\n", specialBaseConverter(decimal_num));
 }
 
@@ -168,7 +166,7 @@ void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
 
 
 
-/*builds the action table, with the needed opcodes and functs*/
+/* builds the action table, with the needed opcodes */
 void tableBuild(action *opcode) {
 
     opcode[0].name = "mov";
