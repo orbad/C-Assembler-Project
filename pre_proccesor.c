@@ -46,9 +46,9 @@ void pre_proccesor(FILE *file, char fileName[])
         return;
     }
 
-while (fgets(line, LINE_LENGTH, file) != NULL)
+    while (fgets(line, LINE_LENGTH, file) != NULL)
     {
-                memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
+        memset(isMacro, '\0', sizeof(char) * LINE_LENGTH); /* resets the comparison array for the next itiration */
         if (macroFlag == FALSE)
         {
             strncpy(isMacro, line, 6);
@@ -84,9 +84,10 @@ while (fgets(line, LINE_LENGTH, file) != NULL)
             }
             else
             {
-                if (strcmp(line,"\n") == 0){
-                     fputs(line, newFile); /* print the empty line */
-                     continue;
+                if (strcmp(line, "\n") == 0)
+                {
+                    fputs(line, newFile); /* print the empty line */
+                    continue;
                 }
                 else if (find_macro(macroTable, line) != NULL)
                 {
@@ -134,4 +135,4 @@ while (fgets(line, LINE_LENGTH, file) != NULL)
     free_list_of_lists(macroTable);
     fclose(file);
     fclose(newFile);
-    }
+}
