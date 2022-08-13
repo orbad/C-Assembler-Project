@@ -1,8 +1,7 @@
 #include "header.h"
 
 
-
-/*removing the whitespaces at the end of each sentence*/
+/* Removing the whitespaces at the end of each sentence */
 void removeTails(char * line)
 {
     int index, i;
@@ -21,7 +20,7 @@ void removeTails(char * line)
     line[index + 1] = '\0';
 }
 
-/*searching the action table list for actions */
+/* Searching the action table list for actions */
 int findAction(char* token, action table[] ) {
     int i;
     for (i = DEF_VAL; i < instructions_size; i++)
@@ -30,7 +29,7 @@ int findAction(char* token, action table[] ) {
     return NEUTRAL;
 }
 
-/*searching the system Reserved table list  */
+/* Searching the system Reserved table list  */
 int memCheck(char* token, sysReserved memory[] ) {
     int i;
     for (i = DEF_VAL; i < sys_res_size; i++)
@@ -40,7 +39,7 @@ int memCheck(char* token, sysReserved memory[] ) {
 
 }
 
-/*getting a number out of a string*/
+/* Getting a number out of a string*/
 int extractNumber (char * word){
     char c;
     int negative = FALSE;
@@ -60,7 +59,7 @@ int extractNumber (char * word){
     return num;
 }
 
-/*checking if the token is a familiar symbol from the symbol table*/
+/* Checking if the token is a known symbol from the symbol table */
 int isSymbol(string token, symbol * symTable, int tableSize){
     int i;
     for (i = 0; i <= tableSize; i++) {
@@ -70,7 +69,23 @@ int isSymbol(string token, symbol * symTable, int tableSize){
     return NEUTRAL;
 }
 
-/*the binary translation is being calculated the other way (left to right).
+
+/* This method receives an integer (doesn't matter if positive or negative) from -1022 to 1023
+    And provides a 2-length array which consists the number's representation in the project's 32-base */
+char* specialBaseConverter(int val)
+{
+    static char conv[3] = { 0 };
+    const char base[] = "!@#$%^&*<>abcdefghijklmnopqrstuv\0";
+    int first, second;
+    first = val & 31; /* First 5 bits */
+    second = ((val & ~31) >> 5) & 31; /* second 5 bits */
+
+    conv[0] = base[second];
+    conv[1] = base[first];
+    return conv;
+}
+
+/* The binary translation is being calculated the other way (left to right).
  * before printing we reverse it */
 char *strReverse(char *str)
 {
@@ -87,16 +102,45 @@ char *strReverse(char *str)
     return str;
 }
 
-/*this is the main print to ob file functions.
- * a single binary line is being reversed and transformed to the special base.
+void intTo32BasePrint(int printCounter, FILE *file ,int binaryValueInInt){
+
+    fprintf(file ,"%s\t", specialBaseConverter(printCounter));
+    fprintf(file,"%s\n", specialBaseConverter(binaryValueInInt));
+}
+
+void binaryTo32BasePrint(int printCounter , FILE *file ,char binaryString[]){
+    int num1;
+    char[] reverseBinaryString= strReverse(binaryString);
+    num1=atoi(reverseBinaryString);
+    // num1=atoi(binaryString); /* Check in tests whether strReverse is needed */
+    int rem,base=1;
+    int decimal_num=0;
+    while (num1>0){
+        rem=num1%10;
+        decimal_num+= rem*base;
+        num1/=10;
+        base *=2;
+    }
+    fprintf(file, "%s\t", specialBaseConverter(printCounter));
+    fprintf(file, "%s\n", specialBaseConverter(decimal_num));
+}
+
+int binaryConnection(operandBuilder a){
+    int sum=0;
+    sum+=(a.opcode<<opcode_add) + (a.source_operand<<source_add) + (a.destination_operand<<dest_add) + (a.ARE);
+    return sum;
+}
+
+/* This is the main print to ob file functions.
+ * a single binary line is being reversed and transformed to the project's 32 special base.
   */
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
     int i = DEF_VAL, j = DEF_VAL, index = 1, counter = DEF_VAL;
     int num2;
-    string fullLine;
-    char *pt; /*for strtol*/
-    char cleanBinary[] = "00000", binary[] = "00000",hex[5];
-    char code[] = "A0-B0-C0-D0-E0\n", newLine[MAX_BINARY]="0000000000\0";
+    String fullLine;
+    char *pt; /* For strtol functionality */
+    char cleanBinary[] = "00000", binary[] = "00000", base32[3];
+    char code[11] = "", newLine[MAX_BINARY]="0000000000\0";
 
     strcpy(newLine, reversedLine);
     strReverse(newLine);
@@ -107,14 +151,14 @@ void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
             binary[i] = newLine[counter];
             counter++;
         }
-        /*we take the convert the number to hexadecimal using sprintf and %x*/
+        /* We take the number and convert it to the project's 32-base using sprintf and specialBaseConverter function*/
         num2 = strtol(binary, &pt, 2);
-        sprintf(hex, "%x", num2);
-        code[index] = hex[0];
-        index = index + 3;
+        sprintf(base32, "%s", specialBaseConverter(num2));
+        code[index] = base32[0];
+        index++;
         strcpy(binary, cleanBinary);
     }
-    sprintf(fullLine,"0%d ",printCounter);
+    sprintf(fullLine,"%s", specialBaseConverter(printCounter));
     strcat(fullLine,code);
     fputs( fullLine,file);
 
@@ -122,7 +166,7 @@ void specialBasePrint(char reversedLine[], FILE *file, int printCounter) {
 
 
 
-/*builds the action table, with the needed opcodes and functs*/
+/* builds the action table, with the needed opcodes */
 void tableBuild(action *opcode) {
 
     opcode[0].name = "mov";
@@ -237,7 +281,7 @@ void memoryBuild(sysReserved *memory) {
     memory[20].words="prn";
     memory[21].words="jsr";
     memory[22].words="rts";
-    memory[23].words="stop";
+    memory[23].words="hlt";
     memory[24].words=".data";
     memory[25].words=".string";
     memory[26].words=".struct";
