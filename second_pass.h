@@ -2,12 +2,12 @@
 
 /*this object will hold the data lines of the ob file*/
 typedef struct data_List {
-    string dLine;
+    String dLine;
 } dataList;
 
 /*this object will store the extern labels addresses, for the externals file*/
 typedef struct extern_addresses {
-    string name;
+    String name;
     int address;
 } extAddress;
 
@@ -53,11 +53,11 @@ int immediateWordProcess(char *operand, FILE *newCode, int printCounter);
 
 /*extern and entries making files functions*/
 
-void updateExtAdd(string label, int address, extAddress *extAdd,int extSize);
+void updateExtAdd(String label, int address, extAddress *extAdd,int extSize);
 
-void makeExtFile(string fileName,extAddress *extAdd,int extSize);
+void makeExtFile(String fileName,extAddress *extAdd,int extSize);
 
-void makeEntFile(string fileName,symbol *symTable,dynamicMem *memVariables);
+void makeEntFile(String fileName,symbol *symTable,dynamicMem *memVariables);
 
 
 

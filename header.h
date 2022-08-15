@@ -65,23 +65,21 @@ enum dynamic_values_flags{symTable_size = 0, DC_size, IC_size, err_flag};
 
 enum staticSizes{sys_res_size = 31, instructions_size=16, memVariables_size = 4};
 
-
-
-int main(int argc, char *argv[]);
-
-void pre_processor(FILE *sFile, char *fileName);
-
-symbol* first_pass(char *fileName, object *objects);
-
-void second_pass (char *fileName, symbol * symTable,object *objects);
-
-
 /*token process functions */
-
 void removeTails(char * line);
+
+int findAction(char* token, action table[] );
+int isSymbol(String token, symbol * symTable, int tableSize);
+int memCheck(char* token, sysReserved memory[]);
+int extractNumber (char * word);
+int isSymbol(String token, symbol * symTable, int tableSize);
+char* specialBaseConverter(int val);
 
 /*action table functions */
 void tableBuild(action *opcode);
+
+/*builds the memory table, with the system reserved values*/
+void memoryBuild(sysReserved *memory);
 
 /*Project's 32-base language*/
 void langBuild(langReserved *base);
@@ -90,7 +88,7 @@ char* specialBaseConverter(int val);
 
 void intTo32BasePrint(int printCounter, FILE *file ,int binaryValue); 
 
-int binaryConnection(operandBuilder a);
+            /*int binaryConnection(operandBuilder a);*/
 
 void binaryTo32BasePrint(int printCounter, FILE *file ,char binaryString[]);
 
@@ -111,4 +109,8 @@ int extractNumber (char * word);
 
 void specialBasePrint(char reversedLine[], FILE *file, int printCounter);
 
+void pre_proccesor(FILE *file, char fileName[]);
+symbol* first_pass(char *fileName,object* objects);
+void second_pass (char *fileName, symbol * symTable,object * objects);
+int main(int argc, char *argv[]);
 #endif

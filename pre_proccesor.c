@@ -55,7 +55,7 @@ void pre_proccesor(FILE *file, char fileName[])
             if ((strcmp(isMacro, "macro ")) == 0) /* Checks if the first word is "macro " */
             {
                 token = strchr(line, *delemiters);
-                trimString(token);
+                /*trimString(token);*/
                 removeTails(token);
                 if (search_list(macroTable, token) == 0) /* Valid macro insert */
                 {

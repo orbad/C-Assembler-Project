@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jul 31 14:06:41 2022
+# Make data base, printed on Mon Aug 15 11:25:30 2022
 
 # Variables
 
@@ -17,7 +17,7 @@ make: *** No rule to make target 'all'.  Stop.
 # automatic
 ?F = $(notdir $?)
 # environment
-WSLENV = VSCODE_WSL_EXT_LOCATION/up
+WSLENV = VSCODE_WSL_EXT_LOCATION/up:VSCODE_SERVER_TAR/up
 # default
 .SHELLFLAGS := -c
 # automatic
@@ -34,8 +34,8 @@ SHELL = /bin/sh
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
 _ = /usr/bin/make
-# makefile
-MAKEFILE_LIST := 
+# makefile (from 'makefile', line 1)
+MAKEFILE_LIST :=  makefile
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
@@ -47,11 +47,13 @@ VSCODE_CWD = /mnt/c/Users/eliga/AppData/Local/Programs/Microsoft VS Code
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/elig/.vscode-server/bin/3b889b090b5ad5793f524b5d1d39fda662b96a2a/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/AdoptOpenJDK/jdk-11.0.11.9-hotspot/bin:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/dotnet/:/mnt/c/Users/eliga/AppData/Local/Programs/Python/Python310/Scripts/:/mnt/c/Users/eliga/AppData/Local/Programs/Python/Python310/:/mnt/c/Users/eliga/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/eliga/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/eliga/AppData/Local/GitHubDesktop/bin:/snap/bin
+PATH = /home/elig/.vscode-server/bin/6d9b74a70ca9c7733b29f0456fd8195364076dda/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/AdoptOpenJDK/jdk-11.0.11.9-hotspot/bin:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/dotnet/:/mnt/c/Users/eliga/AppData/Local/Programs/Python/Python310/Scripts/:/mnt/c/Users/eliga/AppData/Local/Programs/Python/Python310/:/mnt/c/Users/eliga/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/eliga/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/eliga/AppData/Local/GitHubDesktop/bin:/snap/bin
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-b0b90a46-ea10-4f32-a3e9-452446be3c9a.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-20ac8270-7f75-4867-ba7a-e9290eec093a.sock
+# environment
+VSCODE_SERVER_TAR = /mnt/c/Users/eliga/AppData/Local/Temp/vscode-remote-wsl/6d9b74a70ca9c7733b29f0456fd8195364076dda/vscode-server-stable-linux-x64.tar.gz
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -63,7 +65,7 @@ PWD = /home/elig/Project/C/Maman14/C-Assembler-Project
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/17989_interop
+WSL_INTEROP = /run/WSL/1161_interop
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -83,7 +85,6 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # default
- 
 MAKECMDGOALS := all
 # environment
 SHLVL = 2
@@ -92,7 +93,7 @@ MAKE_VERSION := 4.2.1
 # environment
 USER = elig
 # makefile
-.DEFAULT_GOAL := 
+.DEFAULT_GOAL := proj
 # environment
 NAME = DESKTOP-S3AJFL8
 # automatic
@@ -116,7 +117,6 @@ MFLAGS = -pqrR
 # automatic
 +F = $(notdir $+)
 # environment
- 
 VSCODE_HANDLES_SIGPIPE = true
 # default
 MAKEFILES := 
@@ -140,10 +140,8 @@ LANG = C
 TERM = xterm-256color
 # environment
 WSL_DISTRO_NAME = Ubuntu
-# environment
-MOTD_SHOWN = update-motd
 # variable set hash-table stats:
-# Load=64/1024=6%, Rehash=0, Collisions=4/86=5%
+# Load=64/1024=6%, Rehash=0, Collisions=4/89=4%
 
 # Pattern-specific Variable Values
 
@@ -151,9 +149,9 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 2064, inode 54454): 15 files, no impossibilities.
+# . (device 2064, inode 54454): 22 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -162,25 +160,77 @@ MOTD_SHOWN = update-motd
 # Files
 
 # Not a target:
+header.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+pre_proccesor.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 all:
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has not been updated.
 
-# Not a target:
-Makefile:
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has been updated.
-#  Failed to be updated.
+first_pass.o: first_pass.c header.h first_pass.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 10):
+	gcc -g -c -ansi -pedantic -Wall first_pass.c -o first_pass.o
+
+second_pass.o: second_pass.c header.h second_pass.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 12):
+	gcc -g -c -ansi -pedantic -Wall second_pass.c -o second_pass.o
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  File does not exist.
+#  Last modified 2022-08-15 11:25:02.19780351
 #  File has been updated.
-#  Failed to be updated.
+#  Successfully updated.
+
+# Not a target:
+first_pass.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+second_pass.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+proj: assembler.o functions.o pre_proccesor.o first_pass.o second_pass.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 2):
+	gcc -g -ansi -pedantic -Wall assembler.o functions.o pre_proccesor.o first_pass.o second_pass.o -o proj
+
+assembler.o: assembler.c header.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 4):
+	gcc -g -c -ansi -pedantic -Wall assembler.c -o assembler.o
+
+functions.o: functions.c header.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 6):
+	gcc -g -c -ansi -pedantic -Wall functions.c -o functions.o
 
 # Not a target:
 .DEFAULT:
@@ -188,27 +238,58 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
+pre_proccesor.o: pre_proccesor.c header.h pre_proccesor.h
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 8):
+	gcc -g -c -ansi -pedantic -Wall pre_proccesor.c -o pre_proccesor.o
+
 # Not a target:
-GNUmakefile:
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has been updated.
-#  Failed to be updated.
+first_pass.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+second_pass.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+assembler.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+functions.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+pre_proccesor.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # files hash-table stats:
-# Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
+# Load=19/1024=2%, Rehash=0, Collisions=0/52=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 242 B / avg = 10 B
-# current buf: size = 8162 B / used = 242 B / count = 23 / avg = 10 B
+ 
+# strcache buffers: 1 (0) / strings = 28 / storage = 300 B / avg = 10 B
+# current buf: size = 8162 B / used = 300 B / count = 28 / avg = 10 B
 
-# strcache performance: lookups = 26 / hit rate = 11%
+# strcache performance: lookups = 61 / hit rate = 54%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=1/26=4%
-# Finished Make data base on Sun Jul 31 14:06:41 2022
+# Load=28/8192=0%, Rehash=0, Collisions=1/61=2%
+# Finished Make data base on Mon Aug 15 11:25:30 2022
 
  

@@ -4,7 +4,6 @@
 #include "header.h"
 
 /* Struct decleration */
-
 /* Each node represets a line in the LinkedList */
 typedef struct Node{
     String line;

@@ -1,6 +1,5 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/home/elig/Project/C/Maman14/C-Assembler-Project'
+gcc -g -ansi -pedantic -Wall assembler.o functions.o pre_proccesor.o first_pass.o second_pass.o -o proj
 make: Leaving directory '/home/elig/Project/C/Maman14/C-Assembler-Project'
  
-make: *** No targets specified and no makefile found.  Stop.
-
