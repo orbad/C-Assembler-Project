@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Aug 15 11:25:30 2022
+# Make data base, printed on Sun Aug 21 11:46:07 2022
 
 # Variables
 
@@ -17,7 +17,7 @@ make: *** No rule to make target 'all'.  Stop.
 # automatic
 ?F = $(notdir $?)
 # environment
-WSLENV = VSCODE_WSL_EXT_LOCATION/up:VSCODE_SERVER_TAR/up
+WSLENV = VSCODE_WSL_EXT_LOCATION/up
 # default
 .SHELLFLAGS := -c
 # automatic
@@ -51,9 +51,7 @@ PATH = /home/elig/.vscode-server/bin/6d9b74a70ca9c7733b29f0456fd8195364076dda/bi
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-20ac8270-7f75-4867-ba7a-e9290eec093a.sock
-# environment
-VSCODE_SERVER_TAR = /mnt/c/Users/eliga/AppData/Local/Temp/vscode-remote-wsl/6d9b74a70ca9c7733b29f0456fd8195364076dda/vscode-server-stable-linux-x64.tar.gz
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-85c5c9fe-f0c3-44e7-acfd-fb17945ce063.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -65,7 +63,7 @@ PWD = /home/elig/Project/C/Maman14/C-Assembler-Project
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/1161_interop
+WSL_INTEROP = /run/WSL/11_interop
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -75,7 +73,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 LOGNAME = elig
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
@@ -140,6 +138,8 @@ LANG = C
 TERM = xterm-256color
 # environment
 WSL_DISTRO_NAME = Ubuntu
+# environment
+MOTD_SHOWN = update-motd
 # variable set hash-table stats:
 # Load=64/1024=6%, Rehash=0, Collisions=4/89=4%
 
@@ -149,9 +149,9 @@ WSL_DISTRO_NAME = Ubuntu
 
 # Directories
 
-# . (device 2064, inode 54454): 22 files, no impossibilities.
+# . (device 2064, inode 54454): 23 files, no impossibilities.
 
-# 22 files, no impossibilities in 1 directories.
+# 23 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,9 +287,9 @@ pre_proccesor.c:
 # strcache buffers: 1 (0) / strings = 28 / storage = 300 B / avg = 10 B
 # current buf: size = 8162 B / used = 300 B / count = 28 / avg = 10 B
 
-# strcache performance: lookups = 61 / hit rate = 54%
+# strcache performance: lookups = 62 / hit rate = 54%
 # hash-table stats:
-# Load=28/8192=0%, Rehash=0, Collisions=1/61=2%
-# Finished Make data base on Mon Aug 15 11:25:30 2022
+# Load=28/8192=0%, Rehash=0, Collisions=1/62=2%
+# Finished Make data base on Sun Aug 21 11:46:07 2022
 
  

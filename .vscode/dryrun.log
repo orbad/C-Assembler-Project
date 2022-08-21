@@ -1,5 +1,10 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/elig/Project/C/Maman14/C-Assembler-Project'
+gcc -g -c -ansi -pedantic -Wall assembler.c -o assembler.o
+gcc -g -c -ansi -pedantic -Wall functions.c -o functions.o
+gcc -g -c -ansi -pedantic -Wall pre_proccesor.c -o pre_proccesor.o
+gcc -g -c -ansi -pedantic -Wall first_pass.c -o first_pass.o
+gcc -g -c -ansi -pedantic -Wall second_pass.c -o second_pass.o
 gcc -g -ansi -pedantic -Wall assembler.o functions.o pre_proccesor.o first_pass.o second_pass.o -o proj
 make: Leaving directory '/home/elig/Project/C/Maman14/C-Assembler-Project'
  
