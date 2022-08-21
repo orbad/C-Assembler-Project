@@ -105,7 +105,7 @@ void second_pass(char *fileName, symbol *symTable, object *objects)
         {
             token = (strtok(NULL, delimit));
             DC = dataTranslation(token, dataLine, DC); /* Number handling (same as data) */
-            token = (strtok(NULL, delimit));
+            token+=2;
             DC = stringTranslation(token, dataLine, DC); /* String handling */
             continue;
         }
@@ -189,7 +189,7 @@ int firstWordProcess(int action, int printCounter, FILE *newCode, operandBuilder
     {
         a->source_operand = A;
         a->destination_operand = A;
-        sum = binaryConnection(a);
+        sum = binaryConnection(*a);
         intTo32BasePrint(printCounter, newCode, sum);
     }
     return printCounter++;
@@ -230,9 +230,9 @@ int *middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder *
         extraWord2 = operandTranslation(secondOperand, memBuilder, doubleOpFlag, symTable, symTableSize, extAdd, printCounter, &extSize, &errorFlag);
     }
 
-    printCounter++;
-    sum = binaryConnection(memBuilder);
+    sum = binaryConnection(*memBuilder);
     intTo32BasePrint(printCounter, newCode, sum);
+    printCounter++;
 
     /*only for extra words*/
 
@@ -257,13 +257,12 @@ int *middleWordProcess(char *firstOperand, char *secondOperand, operandBuilder *
 /* Translating an operand to the correct addressing, and sending to print*/
 int operandTranslation(char *operand, operandBuilder *memBuild, int isSource, symbol *symTable, int symTableSize, extAddress *extAdd, int printCounter, int *extSize, int *errorFlag)
 {
-    int refNum = DEF_VAL, addNum = DEF_VAL, extraWordFlag = FALSE, indexAdd = FALSE;
-
+    int refNum = DEF_VAL, addNum = DEF_VAL, operandLength ,extraWordFlag = FALSE, indexAdd = FALSE;
     /* If the operand is structure ,it contains ".", this check is first because we'll split the token afterwards. */
     if (strchr(operand, '.'))
-    {                                    /* A line with a point (which is not .data/.string/.struct must contain a label and a reference number after it */
+    {
+        /* A line with a point (which is not .data/.string/.struct must contain a label and a reference number after it */
         refNum = extractNumber(operand); /* Extracting the reference number */
-        operand = strtok(operand, strchr(operand, '.'));
         addNum = structure;
         indexAdd = TRUE;
     }
@@ -287,14 +286,14 @@ int operandTranslation(char *operand, operandBuilder *memBuild, int isSource, sy
         }
     }
 
-    /* If the operand is immediate - it will start with # */
+        /* If the operand is immediate - it will start with # */
     else if (operand[DEF_VAL] == '#')
     {
         addNum = immediate;
         extraWordFlag = -2; /* NEUTRAL means there's no symbol, -2 will be immediate flag */
     }
 
-    /*if the operand is a register*/
+        /*if the operand is a register*/
     else if (operand[DEF_VAL] == 'r')
     {
         refNum = extractNumber(operand);
@@ -311,7 +310,6 @@ int operandTranslation(char *operand, operandBuilder *memBuild, int isSource, sy
         /* All other cases, this is either the first and only operand or the second operand - needs to be a destination operand */
         memBuild->destination_operand = addNum;
     }
-
     return extraWordFlag;
 }
 
@@ -322,6 +320,7 @@ int labelWordsProcess(int address, int source, FILE *newCode, int printCounter)
     char cleanLine[BINARY_LENGTH] = "0000000000\0", line[BINARY_LENGTH];
     int sum;
     operandBuilder *labelBuild;
+    labelBuild=(operandBuilder *)malloc(sizeof(operandBuilder));
 
     strcpy(line, cleanLine);
 
@@ -335,24 +334,24 @@ int labelWordsProcess(int address, int source, FILE *newCode, int printCounter)
         labelBuild->ARE = source;
 
     /*Translating the base to a new binary line*/
-            /*bitTranslation(binary_line_len,binary_line_ind,base,line);*/
-    printCounter++;
-            /*specialBasePrint(line, newCode, printCounter);*/
-    sum = binaryConnection(labelBuild);
+    /*bitTranslation(binary_line_len,binary_line_ind,base,line);*/
+    /*specialBasePrint(line, newCode, printCounter);*/
+    sum = binaryConnection(*labelBuild);
     intTo32BasePrint(printCounter, newCode, sum);
+    printCounter++;
 
     /*    strcpy(line,cleanLine);
 
-    /* Looks like offset handling 
+    /* Looks like offset handling
         if (source==NEUTRAL)
            labelBuild->ARE=R; /*source contains the correct bit number for R or E
         else
             labelBuild->ARE=source;  source contains the correct bit number for E */
-    
-        /*Translating the offset to a new binary line
-        bitTranslation(binary_line_len,binary_line_ind,offset,line);
-     printCounter++;
-     specialBasePrint(line, newCode, printCounter);*/
+
+    /*Translating the offset to a new binary line
+    bitTranslation(binary_line_len,binary_line_ind,offset,line);
+ printCounter++;
+ specialBasePrint(line, newCode, printCounter);*/
 
     return printCounter;
 }
@@ -364,6 +363,7 @@ int immediateWordProcess(char *operand, FILE *newCode, int printCounter)
 {
     char cleanLine[BINARY_LENGTH] = "0000000000\0", line[BINARY_LENGTH];
     operandBuilder *immediateBuild;
+    immediateBuild=(operandBuilder *)malloc(sizeof(operandBuilder));
     int sum = 0;
     int num = extractNumber(operand);
     strcpy(line, cleanLine);
@@ -371,10 +371,10 @@ int immediateWordProcess(char *operand, FILE *newCode, int printCounter)
     immediateBuild->source_operand = A;        /* Immediate word has 0 at source operand location*/
     immediateBuild->opcode = A;                /* Immediate word has 0 at opcode */
     immediateBuild->destination_operand = num; /* 8-bit number is located in destination_operand location */
-    sum = binaryConnection(immediateBuild);
+    sum = binaryConnection(*immediateBuild);
     operand++;
     printCounter++;
-                /* specialBasePrint(line, newCode, printCounter);*/
+    /* specialBasePrint(line, newCode, printCounter);*/
     intTo32BasePrint(printCounter, newCode, sum);
 
     return printCounter;
@@ -461,6 +461,7 @@ int dataTranslation(char *token, dataList *dataLine, int DC)
     }
     return DC;
 }
+
 
 /*making the ent file, printing the special requirements*/
 void makeEntFile(String fileName, symbol *symTable, dynamicMem *memVariables)
